@@ -183,7 +183,7 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
           onClick={claimTokens}
           className="py-3.5 rounded-lg w-full bg-secondary text-white text-sm font-semibold"
         >
-          Claim FUSN
+          Claim DOGX
         </button>
       </div>
       <Modal
@@ -193,7 +193,7 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
         }}
       >
         <div className="flex items-center justify-center p-6 text-xl font-semibold">
-          <div>stake DAI</div>
+          <div>stake DUSD</div>
         </div>
         <div className="flex justify-between px-6 py-4 my-3 text-xl bg-gray-700 rounded-md">
           <input
@@ -202,7 +202,7 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
             placeholder="0.00"
             ref={lendAmount}
           />
-          <div className="text-white">DAI</div>
+          <div className="text-white">DUSD</div>
         </div>
         <div className="p-8">
           {!approvedLend ? (
@@ -233,7 +233,7 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
         }}
       >
         <div className="flex items-center justify-center p-6 text-xl font-semibold">
-          <div>Withdraw DAI</div>
+          <div>Withdraw DUSD</div>
         </div>
         <div className="flex justify-between px-6 py-4 my-3 text-xl bg-gray-700 rounded-md">
           <input
@@ -242,7 +242,7 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
             placeholder="0.00"
             ref={withdrawAmount}
           />
-          <div className="text-white">DAI</div>
+          <div className="text-white">DUSD</div>
         </div>
         <div className="p-8">
           <button
@@ -260,7 +260,7 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
         }}
       >
         <div className="flex items-center justify-center p-6 text-xl font-semibold">
-          <div>Borrow DAI</div>
+          <div>Borrow DUSD</div>
         </div>
         <div className="flex justify-between px-6 py-4 my-3 text-xl bg-gray-700 rounded-md">
           <input
@@ -269,7 +269,7 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
             placeholder="0.00"
             ref={borrowAmount}
           />
-          <div className="text-white">DAI</div>
+          <div className="text-white">DUSD</div>
         </div>
         <div className="p-8">
           <button
@@ -287,7 +287,7 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
         }}
       >
         <div className="flex items-center justify-center p-6 text-xl font-semibold">
-          <div>Repay DAI</div>
+          <div>Repay DUSD</div>
         </div>
         <div className="flex justify-between px-6 py-4 my-3 text-xl bg-gray-700 rounded-md">
           <input
@@ -296,7 +296,7 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
             placeholder="0.00"
             ref={repayAmount}
           />
-          <div className="text-white">DAI</div>
+          <div className="text-white">DUSD</div>
         </div>
         <div className="p-8">
           {!approvedRepay ? (

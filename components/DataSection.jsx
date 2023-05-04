@@ -10,27 +10,27 @@ const DataSection = ({
 }) => {
   return (
     <div className="flex gap-6">
-      <div className="flex flex-row justify-evenly p-4 w-1/2 bg-gray-900 rounded-lg gap-y-3">
+      <div className="flex flex-row w-1/2 p-4 bg-gray-900 rounded-lg justify-evenly gap-y-3">
         <div className="flex flex-col">
           <div className="flex items-center gap-x-3 gap-y-3">
-            <div className="text-xs text-secondary font-medium ">Lending</div>
-            <span className="text-xs text-white font-medium">100% APY</span>
+            <div className="text-xs font-medium text-secondary ">Lending</div>
+            <span className="text-xs font-medium text-white">100% APY</span>
           </div>
           <div className="text-xl font-semibold text-white">
-            {earnedTokens} FUSN
+            {earnedTokens} DOGX
           </div>
           <div className="text-sm tracking-wide text-gray-500">
-            {lendingBalance} DAI
+            {lendingBalance} DUSD
           </div>
         </div>
 
         <div className="flex flex-col">
           <div className="flex items-center gap-x-3 gap-y-3">
-            <div className="text-xs text-primary font-medium ">Borrowing</div>
-            <span className="text-xs text-white font-medium">0.3% fee</span>
+            <div className="text-xs font-medium text-primary ">Borrowing</div>
+            <span className="text-xs font-medium text-white">0.5% fee</span>
           </div>
           <div className="text-xl font-semibold text-white">
-            {borrowBalance} DAI
+            {borrowBalance} DUSD
           </div>
           <div className="text-sm tracking-wide text-gray-500">
             {collateralBalance} Ξ
@@ -38,25 +38,25 @@ const DataSection = ({
         </div>
       </div>
 
-      <div className="flex flex-row justify-evenly p-4 w-1/2 bg-gray-900 rounded-lg gap-y-3">
+      <div className="flex flex-row w-1/2 p-4 bg-gray-900 rounded-lg justify-evenly gap-y-3">
         <div className="flex flex-col justify-around">
           <div className="flex items-center gap-x-3 gap-y-3">
-            <div className="text-xs text-primary font-medium ">
-              FUSN Wallet Balance
+            <div className="text-xs font-medium text-primary ">
+              DOGX Wallet Balance
             </div>
           </div>
           <div className="text-xl font-semibold text-white">
-            {fusnBalance} FUSN
+            {fusnBalance} DOGX
           </div>
         </div>
         <div className="flex flex-col justify-around">
           <div className="flex items-center gap-x-3 gap-y-3">
-            <div className="text-xs text-secondary font-medium ">
-              DAI Wallet Balance
+            <div className="text-xs font-medium text-secondary ">
+              DUSD Wallet Balance
             </div>
           </div>
           <div className="text-xl font-semibold text-white">
-            {daiBalance} DAI
+            {daiBalance} DUSD
           </div>
         </div>
       </div>

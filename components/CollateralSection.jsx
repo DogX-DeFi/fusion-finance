@@ -98,7 +98,7 @@ const CollateralSection = ({ collateralBalance, coreAddress, coreAbi }) => {
               <td className="py-4 border-b border-gray-700">
                 Amount collateralized
               </td>
-              <td className="py-4 border-b border-gray-700 text-center">
+              <td className="py-4 text-center border-b border-gray-700">
                 Action
               </td>
             </tr>
@@ -106,7 +106,7 @@ const CollateralSection = ({ collateralBalance, coreAddress, coreAbi }) => {
           <tbody>
             <tr className="text-sm text-gray-500">
               <td className="py-4">
-                <div className="flex gap-4 items-center">
+                <div className="flex items-center gap-4">
                   <span className="font-bold text-md">
                     {" "}
                     {chainId === 5 ? "Ethereum" : "Matic"}{" "}
@@ -116,15 +116,15 @@ const CollateralSection = ({ collateralBalance, coreAddress, coreAbi }) => {
               <td className="py-4">
                 {collateralBalance} {chainId === 5 && "Ξ"}
               </td>
-              <td className="py-4 flex justify-center">
+              <td className="flex justify-center py-4">
                 <button
-                  className="flex justify-center py-3 mx-1 rounded-full w-12 border-2 border-secondary text-secondary text-sm font-bold"
+                  className="flex justify-center w-12 py-3 mx-1 text-sm font-bold border-2 rounded-full border-secondary text-secondary"
                   onClick={() => setShowCollateralize(true)}
                 >
                   +
                 </button>
                 <button
-                  className="flex justify-center py-3 mx-1 rounded-full w-12 border-2 border-primary text-primary text-sm font-bold"
+                  className="flex justify-center w-12 py-3 mx-1 text-sm font-bold border-2 rounded-full border-primary text-primary"
                   onClick={() => setShowWithdraw(true)}
                 >
                   -
@@ -138,17 +138,17 @@ const CollateralSection = ({ collateralBalance, coreAddress, coreAbi }) => {
         isVisible={showCollateralize}
         onClose={() => setShowCollateralize(false)}
       >
-        <div className="p-6 flex items-center justify-center font-semibold text-xl">
-          <div>Collateralize {chainId === 5 ? "ETH" : "MATIC"}</div>
+        <div className="flex items-center justify-center p-6 text-xl font-semibold">
+          <div>Collateralize {chainId === 3501 ? "JFIN" : "TARO"}</div>
         </div>
-        <div className="bg-gray-700 my-3 rounded-md px-6 py-4 text-xl flex justify-between">
+        <div className="flex justify-between px-6 py-4 my-3 text-xl bg-gray-700 rounded-md">
           <input
             type="text"
-            className="bg-transparent placeholder:text-gray-400 outline-none w-full text-xl"
+            className="w-full text-xl bg-transparent outline-none placeholder:text-gray-400"
             placeholder="0.00"
             ref={collatAmount}
           />
-          <div className="text-white">{chainId === 5 ? "ETH" : "MATIC"}</div>
+          <div className="text-white">{chainId === 3501 ? "JFIN" : "TARO"}</div>
         </div>
         <div className="p-8">
           <button
@@ -160,17 +160,17 @@ const CollateralSection = ({ collateralBalance, coreAddress, coreAbi }) => {
         </div>
       </Modal>
       <Modal isVisible={showWithdraw} onClose={() => setShowWithdraw(false)}>
-        <div className="p-6 flex items-center justify-center font-semibold text-xl">
-          <div>Withdraw {chainId === 5 ? "ETH" : "MATIC"}</div>
+        <div className="flex items-center justify-center p-6 text-xl font-semibold">
+          <div>Withdraw {chainId === 3501 ? "JFIN" : "TARO"}</div>
         </div>
-        <div className="bg-gray-700 my-3 rounded-md px-6 py-4 text-xl flex justify-between">
+        <div className="flex justify-between px-6 py-4 my-3 text-xl bg-gray-700 rounded-md">
           <input
             type="text"
-            className="bg-transparent placeholder:text-gray-400 outline-none w-full text-xl"
+            className="w-full text-xl bg-transparent outline-none placeholder:text-gray-400"
             placeholder="0.00"
             ref={withdrawAmount}
           />
-          <div className="text-white">{chainId === 5 ? "ETH" : "MATIC"}</div>
+          <div className="text-white">{chainId === 3501 ? "JFIN" : "TARO"}</div>
         </div>
         <div className="p-8">
           <button

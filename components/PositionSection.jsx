@@ -6,13 +6,13 @@ const PositionSection = ({ borrowLimit, liquidationPoint }) => {
       <hr className="border-secondary" />
       <div className="flex gap-x-7">
         <div className="flex flex-col gap-y-4">
-          <div className="flex gap-x-2 items-start">
+          <div className="flex items-start gap-x-2">
             <div className="text-sm font-medium text-white">Borrow Limit: </div>
             <div className="text-sm font-medium text-primary">
-              {borrowLimit} DAI
+              {borrowLimit} DUSD
             </div>
           </div>
-          <div className="flex gap-x-2 items-start">
+          <div className="flex items-start gap-x-2">
             <div className="text-sm font-medium text-white">
               Liquidation Point:{" "}
             </div>
