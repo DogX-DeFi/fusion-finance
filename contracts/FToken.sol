@@ -6,11 +6,11 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract J2USD is ERC20, ERC20Burnable, AccessControl {
+contract DOGX is ERC20, ERC20Burnable, AccessControl {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
-    constructor(address _admin) ERC20("J2O USD", "J2USD") {
+    constructor(address _admin) ERC20("DOGX TOKEN", "DOGX") {
          _setupRole(DEFAULT_ADMIN_ROLE, _admin);
          _setupRole(MINTER_ROLE, _admin);
          _setupRole(BURNER_ROLE, _admin);

@@ -77,7 +77,7 @@ export default function App() {
       ).toFixed(3);
       setEarnedTokens(earnedAmount);
     };
-    const getLendingBalance = async () => {
+    const getStakingBalance = async () => {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const coreContract = new ethers.Contract(
@@ -86,7 +86,7 @@ export default function App() {
         signer
       );
       const address = await signer.getAddress();
-      const rawAmount = await coreContract.getLendingBalance(address);
+      const rawAmount = await coreContract.getStakingBalance(address);
       const amount = Number.parseFloat(
         ethers.utils.formatEther(rawAmount)
       ).toFixed(3);
@@ -156,7 +156,7 @@ export default function App() {
       getFusionBalance();
       getDaiBalance();
       getEarnedTokens();
-      getLendingBalance();
+      getStakingBalance();
       getBorrowBalance();
       getCollateralBalance();
       getBorrowLimit();
@@ -193,7 +193,7 @@ export default function App() {
           coreAbi={fusionCoreAbi}
         />
       </main>
-      <aside className="flex flex-col gap-y-6 pt-6 pr-6 w-96">
+      <aside className="flex flex-col pt-6 pr-6 gap-y-6 w-96">
         <ControlSection
           coreAddress={coreAddress}
           coreAbi={fusionCoreAbi}

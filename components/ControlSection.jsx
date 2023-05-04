@@ -71,14 +71,14 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
     } catch (err) {
       error({ err }.err.reason);
     }
-    e.target.id === "lend" ? setApprovedLend(true) : setApprovedRepay(true);
+    e.target.id === "stake" ? setApprovedLend(true) : setApprovedRepay(true);
   };
 
-  const lend = async (e) => {
+  const stake = async (e) => {
     e.preventDefault();
     try {
       let amount = ethers.utils.parseEther(lendAmount.current.value);
-      let tx = await coreContract.lend(amount);
+      let tx = await coreContract.stake(amount);
       pending();
       await tx.wait();
       success();
@@ -93,7 +93,7 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
     e.preventDefault();
     try {
       let amount = ethers.utils.parseEther(withdrawAmount.current.value);
-      const tx = await coreContract.withdrawLend(amount);
+      const tx = await coreContract.withdrawStaking(amount);
       pending();
       await tx.wait();
       success();
@@ -153,7 +153,7 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
           }}
           className="py-3.5 rounded-lg w-full border border-secondary text-secondary text-sm font-semibold"
         >
-          Lend
+          stake
         </button>
         <button
           onClick={() => {
@@ -192,13 +192,13 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
           setShowLend(false);
         }}
       >
-        <div className="p-6 flex items-center justify-center font-semibold text-xl">
-          <div>Lend DAI</div>
+        <div className="flex items-center justify-center p-6 text-xl font-semibold">
+          <div>stake DAI</div>
         </div>
-        <div className="bg-gray-700 my-3 rounded-md px-6 py-4 text-xl flex justify-between">
+        <div className="flex justify-between px-6 py-4 my-3 text-xl bg-gray-700 rounded-md">
           <input
             type="text"
-            className="bg-transparent placeholder:text-gray-400 outline-none w-full text-xl"
+            className="w-full text-xl bg-transparent outline-none placeholder:text-gray-400"
             placeholder="0.00"
             ref={lendAmount}
           />
@@ -207,7 +207,7 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
         <div className="p-8">
           {!approvedLend ? (
             <button
-              id="lend"
+              id="stake"
               onClick={(event) => {
                 approve(event, lendAmount.current.value);
               }}
@@ -218,10 +218,10 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
           ) : null}
           {approvedLend ? (
             <button
-              onClick={lend}
+              onClick={stake}
               className="py-3.5 rounded-lg w-full border border-secondary hover:bg-secondary text-secondary hover:text-white  text-sm font-semibold"
             >
-              Lend
+              stake
             </button>
           ) : null}
         </div>
@@ -232,13 +232,13 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
           setShowWithdraw(false);
         }}
       >
-        <div className="p-6 flex items-center justify-center font-semibold text-xl">
+        <div className="flex items-center justify-center p-6 text-xl font-semibold">
           <div>Withdraw DAI</div>
         </div>
-        <div className="bg-gray-700 my-3 rounded-md px-6 py-4 text-xl flex justify-between">
+        <div className="flex justify-between px-6 py-4 my-3 text-xl bg-gray-700 rounded-md">
           <input
             type="text"
-            className="bg-transparent placeholder:text-gray-400 outline-none w-full text-xl"
+            className="w-full text-xl bg-transparent outline-none placeholder:text-gray-400"
             placeholder="0.00"
             ref={withdrawAmount}
           />
@@ -259,13 +259,13 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
           setShowBorrow(false);
         }}
       >
-        <div className="p-6 flex items-center justify-center font-semibold text-xl">
+        <div className="flex items-center justify-center p-6 text-xl font-semibold">
           <div>Borrow DAI</div>
         </div>
-        <div className="bg-gray-700 my-3 rounded-md px-6 py-4 text-xl flex justify-between">
+        <div className="flex justify-between px-6 py-4 my-3 text-xl bg-gray-700 rounded-md">
           <input
             type="text"
-            className="bg-transparent placeholder:text-gray-400 outline-none w-full text-xl"
+            className="w-full text-xl bg-transparent outline-none placeholder:text-gray-400"
             placeholder="0.00"
             ref={borrowAmount}
           />
@@ -286,13 +286,13 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
           setShowRepay(false);
         }}
       >
-        <div className="p-6 flex items-center justify-center font-semibold text-xl">
+        <div className="flex items-center justify-center p-6 text-xl font-semibold">
           <div>Repay DAI</div>
         </div>
-        <div className="bg-gray-700 my-3 rounded-md px-6 py-4 text-xl flex justify-between">
+        <div className="flex justify-between px-6 py-4 my-3 text-xl bg-gray-700 rounded-md">
           <input
             type="text"
-            className="bg-transparent placeholder:text-gray-400 outline-none w-full text-xl"
+            className="w-full text-xl bg-transparent outline-none placeholder:text-gray-400"
             placeholder="0.00"
             ref={repayAmount}
           />
