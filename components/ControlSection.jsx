@@ -153,7 +153,7 @@ const ControlSection = ({ coreAddress, coreAbi, daiAddress, daiAbi }) => {
           }}
           className="py-3.5 rounded-lg w-full border border-secondary text-secondary text-sm font-semibold"
         >
-          stake
+          Stake
         </button>
         <button
           onClick={() => {

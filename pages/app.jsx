@@ -25,6 +25,7 @@ export default function App() {
   const [collateralBalance, setCollateralBalance] = useState(0);
   const [borrowLimit, setBorrowLimit] = useState(0);
   const [liquidationPoint, setLiquidationPoint] = useState(0);
+  const [collateralPrice, setCollateralPrice] = useState(0);
 
   const { chainId: chainIdHex, isWeb3Enabled } = useMoralis();
   const chainId = parseInt(chainIdHex);
@@ -152,6 +153,21 @@ export default function App() {
       ).toFixed(3);
       setLiquidationPoint(amount);
     };
+    const getCollateralPrice = async () => {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const coreContract = new ethers.Contract(
+        coreAddress,
+        fusionCoreAbi,
+        signer
+      );
+      const address = await signer.getAddress();
+      const rawAmount = await coreContract.getCollatAssetPrice();
+      const amount = Number.parseFloat(
+        (rawAmount) / 100000000
+      ).toFixed(3);
+      setCollateralPrice(amount);
+    };
     if (isWeb3Enabled && coreAddress) {
       getFusionBalance();
       getDaiBalance();
@@ -161,6 +177,7 @@ export default function App() {
       getCollateralBalance();
       getBorrowLimit();
       getLiquidationPoint();
+      getCollateralPrice();
     }
   }, [isWeb3Enabled, coreAddress, tokenAddress, baseAssetAddress]);
 
@@ -203,6 +220,7 @@ export default function App() {
         <PositionSection
           borrowLimit={borrowLimit}
           liquidationPoint={liquidationPoint}
+          collateralPrice={collateralPrice}
         />
       </aside>
     </div>

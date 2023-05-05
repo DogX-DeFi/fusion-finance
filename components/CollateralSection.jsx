@@ -109,7 +109,7 @@ const CollateralSection = ({ collateralBalance, coreAddress, coreAbi }) => {
                 <div className="flex items-center gap-4">
                   <span className="font-bold text-md">
                     {" "}
-                    {chainId === 5 ? "Ethereum" : "Matic"}{" "}
+                    {chainId === 3501 ? "JFIN" : "TARO"}{" "}
                   </span>
                 </div>
               </td>

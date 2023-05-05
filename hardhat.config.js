@@ -1,27 +1,30 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("@nomiclabs/hardhat-etherscan");
 require("dotenv").config();
-
+require('hardhat-deploy');
 module.exports = {
+  namedAccounts: {
+    deployer: {
+      default: 0,
+      35011: "0xf50d76C91037C153D431815eC943d6E0B8fa4F97",
+      3501: "0xf50d76C91037C153D431815eC943d6E0B8fa4F97",
+    },
+  },
   networks: {
-    hardhat: {
-      forking: {
-        //Comment the first line and uncomment the second line to test on polygon mainnet
-        url: process.env.GOERLI_RPC,
-        //url: process.env.POLYGON_RPC,
-      },
-      chainId: 1337,
+    tch: {
+      url: "https://rpc.thaichain.org",
+      accounts: [`${process.env.PRIVATE_KEY}`],
+      chainId: 7,
     },
-    goerli: {
-      url: process.env.GOERLI_RPC,
-      gasPrice: 50000000000,
-      accounts: [process.env.PRIVATE_KEY],
-      chainId: 5,
+
+    j2o: {
+      url: "https://rpc.j2o.io",
+      accounts: [`${process.env.PRIVATE_KEY}`],
+      chainId: 35011,
     },
-    polygon: {
-      url: process.env.POLYGON_RPC,
-      accounts: [process.env.PRIVATE_KEY],
-      chainId: 137,
+    jfin: {
+      url: "https://rpc.jfinchain.com",
+      accounts: [`${process.env.PRIVATE_KEY}`],
     },
   },
   etherscan: {

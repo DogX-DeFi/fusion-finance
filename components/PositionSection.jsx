@@ -1,6 +1,10 @@
 import React from "react";
 
-const PositionSection = ({ borrowLimit, liquidationPoint }) => {
+const PositionSection = ({
+  borrowLimit,
+  liquidationPrice,
+  collateralPrice,
+}) => {
   return (
     <div className="flex flex-col p-6 bg-gray-900 rounded-lg gap-y-6">
       <hr className="border-secondary" />
@@ -14,10 +18,21 @@ const PositionSection = ({ borrowLimit, liquidationPoint }) => {
           </div>
           <div className="flex items-start gap-x-2">
             <div className="text-sm font-medium text-white">
-              Liquidation Point:{" "}
+              {" "}
+              Collateral Price:{" "}
             </div>
             <div className="text-sm font-medium text-primary">
-              {liquidationPoint}
+              {collateralPrice} DUSD
+            </div>
+          </div>
+          <div className="flex items-start gap-x-2">
+            <div className="text-sm font-medium text-white">
+              {" "}
+              LiquidationPrice:{" "}
+            </div>
+            <div className="text-sm font-medium text-primary">
+              {Number(collateralPrice) - (Number(collateralPrice) * 10) / 100}{" "}
+              DUSD
             </div>
           </div>
         </div>

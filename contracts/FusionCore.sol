@@ -41,11 +41,19 @@ contract FusionCore is AccessControl {
     address public fee_collector;
     uint256 public fee_rate = 10; // 1 %
     address public vault;
+    bool public pause = false;
+    uint public startBlock = 0;
+    uint public stopBlock = 18903732;
 
     ///@notice initiating tokens
     ///@param _baseAssetAddress address of base asset token
     ///@param _fusionAddress address of $FUSN token
-    constructor(Token _baseAssetAddress, Token _fusionAddress, address _aggregatorAddress, address _admin) {
+    constructor(
+        Token _baseAssetAddress,
+        Token _fusionAddress,
+        address _aggregatorAddress,
+        address _admin
+    ) {
         baseAsset = _baseAssetAddress;
         fusionToken = _fusionAddress;
         priceFeed = AggregatorV3Interface(_aggregatorAddress);
@@ -55,13 +63,25 @@ contract FusionCore is AccessControl {
         vault = _admin;
     }
 
-    function setFeeCallector(address _feeCallector) public onlyRole(ADMIN_ROLE) {
+    function setStartBlock(uint _startBlock) public onlyRole(ADMIN_ROLE) {
+        startBlock = _startBlock;
+    }
+
+    function setStopBlock(uint _stopBlock) public onlyRole(ADMIN_ROLE) {
+        stopBlock = _stopBlock;
+    }
+
+    function setFeeCallector(
+        address _feeCallector
+    ) public onlyRole(ADMIN_ROLE) {
         fee_collector = _feeCallector;
     }
+
     function setFeeRate(uint256 _fee_rate) public onlyRole(ADMIN_ROLE) {
         require(_fee_rate > 0, "Can't set fee rate: 0!");
         fee_rate = _fee_rate;
     }
+
     function setVault(address _valut) public onlyRole(ADMIN_ROLE) {
         vault = _valut;
     }
@@ -70,7 +90,11 @@ contract FusionCore is AccessControl {
     ///@dev added 'virtual' identifier for MockCore to override
     modifier passedLiquidation(address _borrower) virtual {
         uint collatAssetPrice = getCollatAssetPrice();
-        require((collatAssetPrice * collateralBalance[_borrower]) / 10 ** 8 <= calculateLiquidationPoint(_borrower), "Position can't be liquidated!");
+        require(
+            (collatAssetPrice * collateralBalance[_borrower]) / 10 ** 8 <=
+                calculateLiquidationPoint(_borrower),
+            "Position can't be liquidated!"
+        );
         _;
     }
 
@@ -84,40 +108,70 @@ contract FusionCore is AccessControl {
     ///@notice calculates amount of time the staker has been staking since the last update.
     ///@param _staker address of staker
     ///@return stakingTime amount of time staked by staker
-    function calculateYieldTime(address _staker) public view returns (uint stakingTime) {
-        stakingTime = block.timestamp - startTime[_staker];
+    function calculateYieldTime(
+        address _staker
+    ) public view returns (uint stakingTime) {
+        if (block.number > startBlock && block.number < stopBlock) {
+            stakingTime = block.timestamp - startTime[_staker];
+        } else {
+            stakingTime = 0;
+        }
     }
 
     ///@notice calculates amount of $FUSN tokens the staker has earned since the last update.
     ///@dev rate = timeStaked / amount of time needed to earn 100% of $FUSN tokens. 31536000 = number of seconds in a year.
     ///@param _staker address of staker
     ///@return yield amount of $FUSN tokens earned by staker
-    function calculateYieldTotal(address _staker) public view returns (uint yield) {
+    function calculateYieldTotal(
+        address _staker
+    ) public view returns (uint yield) {
         uint timeStaked = calculateYieldTime(_staker) * 10 ** 18;
         yield = ((stakingBalance[_staker] * timeStaked) / 31536000) / 10 ** 18;
     }
 
     ///@notice calculates the borrow limit depending on the price of ETH and borrow limit rate.
     ///@return limit current borrow limit for user
-    function calculateBorrowLimit(address _borrower) public view returns (uint limit) {
+    function calculateBorrowLimit(
+        address _borrower
+    ) public view returns (uint limit) {
         uint collatAssetPrice = getCollatAssetPrice();
         // Bug devide by zero
-        if (((((collatAssetPrice * collateralBalance[_borrower]) * 80) / 100)) / 10 ** 8 > borrowBalance[_borrower]) {
-            limit = ((((collatAssetPrice * collateralBalance[_borrower]) * 80) / 100)) / 10 ** 8 - borrowBalance[_borrower];
+        if (
+            ((((collatAssetPrice * collateralBalance[_borrower]) * 80) / 100)) /
+                10 ** 8 >
+            borrowBalance[_borrower]
+        ) {
+            limit =
+                (
+                    (((collatAssetPrice * collateralBalance[_borrower]) * 80) /
+                        100)
+                ) /
+                10 ** 8 -
+                borrowBalance[_borrower];
         } else {
             limit = 0;
         }
     }
 
-    function calculateLiquidationPoint(address _borrower) public view returns (uint point) {
-        point = borrowBalance[_borrower] + (borrowBalance[_borrower] * 10) / 100;
+    function calculateLiquidationPoint(
+        address _borrower
+    ) public view returns (uint point) {
+        point =
+            borrowBalance[_borrower] +
+            (borrowBalance[_borrower] * 10) /
+            100;
     }
 
     ///@notice staks base asset.
     ///@param _amount amount of tokens to stake
     function stake(uint _amount) external {
         require(_amount > 0, "Can't stake amount: 0!");
-        require(baseAsset.balanceOf(msg.sender) >= _amount, "Insufficient balance!");
+        require(block.number > startBlock, "error startBlock");
+        require(block.number < stopBlock, "error stopBlock");
+        require(
+            baseAsset.balanceOf(msg.sender) >= _amount,
+            "Insufficient balance!"
+        );
 
         if (isStaking[msg.sender]) {
             uint yield = calculateYieldTotal(msg.sender);
@@ -128,7 +182,10 @@ contract FusionCore is AccessControl {
         startTime[msg.sender] = block.timestamp;
         isStaking[msg.sender] = true;
 
-        require(baseAsset.transferFrom(msg.sender, address(this), _amount), "Transaction failed!");
+        require(
+            baseAsset.transferFrom(msg.sender, address(this), _amount),
+            "Transaction failed!"
+        );
 
         emit Staking(msg.sender, _amount);
     }
@@ -137,7 +194,10 @@ contract FusionCore is AccessControl {
     ///@param _amount amount of tokens to withdraw
     function withdrawStaking(uint _amount) public {
         require(isStaking[msg.sender], "Can't withdraw before staking!");
-        require(stakingBalance[msg.sender] >= _amount, "Insufficient staking balance!");
+        require(
+            stakingBalance[msg.sender] >= _amount,
+            "Insufficient staking balance!"
+        );
 
         uint yield = calculateYieldTotal(msg.sender);
         fusionBalance[msg.sender] += yield;
@@ -151,7 +211,10 @@ contract FusionCore is AccessControl {
             isStaking[msg.sender] = false;
         }
 
-        require(baseAsset.transfer(msg.sender, withdrawAmount), "Transaction failed!");
+        require(
+            baseAsset.transfer(msg.sender, withdrawAmount),
+            "Transaction failed!"
+        );
 
         emit WithdrawStaking(msg.sender, withdrawAmount);
     }
@@ -160,7 +223,10 @@ contract FusionCore is AccessControl {
     function claimYield() external {
         uint yield = calculateYieldTotal(msg.sender);
 
-        require(yield > 0 || fusionBalance[msg.sender] > 0, "No, $FUSN tokens earned!");
+        require(
+            yield > 0 || fusionBalance[msg.sender] > 0,
+            "No, $FUSN tokens earned!"
+        );
 
         if (fusionBalance[msg.sender] != 0) {
             uint oldYield = fusionBalance[msg.sender];
@@ -186,12 +252,18 @@ contract FusionCore is AccessControl {
     ///@notice withdraw user's collateral ETH and recalculates the borrow limit
     ///@param _amount amount of ETH the user wants to withdraw
     function withdrawCollateral(uint _amount) external {
-        require(collateralBalance[msg.sender] >= _amount, "Not enough collateral to withdraw!");
-        require(!isBorrowing[msg.sender], "Can't withdraw collateral while borrowing!");
+        require(
+            collateralBalance[msg.sender] >= _amount,
+            "Not enough collateral to withdraw!"
+        );
+        require(
+            !isBorrowing[msg.sender],
+            "Can't withdraw collateral while borrowing!"
+        );
 
         collateralBalance[msg.sender] -= _amount;
 
-        (bool success, ) = msg.sender.call{ value: _amount }("");
+        (bool success, ) = msg.sender.call{value: _amount}("");
         require(success, "Transaction Failed!");
 
         emit WithdrawCollateral(msg.sender, _amount);
@@ -207,13 +279,16 @@ contract FusionCore is AccessControl {
         collateralBalance[msg.sender] -= fee;
 
         require(collateralBalance[msg.sender] > 0, "No ETH collateralized!");
-        require(calculateBorrowLimit(msg.sender) >= _amount, "Borrow amount exceeds borrow limit!");
+        require(
+            calculateBorrowLimit(msg.sender) >= _amount,
+            "Borrow amount exceeds borrow limit!"
+        );
 
         isBorrowing[msg.sender] = true;
         borrowBalance[msg.sender] += _amount;
 
         baseAsset.mint(msg.sender, _amount);
-        (bool success, ) = fee_collector.call{ value: fee }("");
+        (bool success, ) = fee_collector.call{value: fee}("");
         require(success, "Transaction Failed!");
 
         emit Borrow(msg.sender, _amount);
@@ -223,8 +298,14 @@ contract FusionCore is AccessControl {
     ///@param _amount amount of base asset to repay
     function repay(uint _amount) external {
         require(isBorrowing[msg.sender], "Can't repay before borrowing!");
-        require(baseAsset.balanceOf(msg.sender) >= _amount, "Insufficient funds!");
-        require(_amount > 0 && _amount <= borrowBalance[msg.sender], "Can't repay amount: 0 or more than amount borrowed!");
+        require(
+            baseAsset.balanceOf(msg.sender) >= _amount,
+            "Insufficient funds!"
+        );
+        require(
+            _amount > 0 && _amount <= borrowBalance[msg.sender],
+            "Can't repay amount: 0 or more than amount borrowed!"
+        );
 
         if (_amount == borrowBalance[msg.sender]) {
             isBorrowing[msg.sender] = false;
@@ -232,7 +313,10 @@ contract FusionCore is AccessControl {
 
         borrowBalance[msg.sender] -= _amount;
 
-        require(baseAsset.transferFrom(msg.sender, address(this), _amount), "Transaction Failed!");
+        require(
+            baseAsset.transferFrom(msg.sender, address(this), _amount),
+            "Transaction Failed!"
+        );
         baseAsset.burn(_amount);
         emit Repay(msg.sender, _amount);
     }
@@ -241,17 +325,21 @@ contract FusionCore is AccessControl {
     ///@param _borrower address of borrower
     ///@dev passedLiquidation modifier checks if the borrow position has passed liquidation point
     ///@dev liquidationReward 1.25% of borrower's ETH collateral
-    function liquidate(address _borrower) external passedLiquidation(_borrower) {
+    function liquidate(
+        address _borrower
+    ) external passedLiquidation(_borrower) {
         require(isBorrowing[_borrower], "This address is not borrowing!");
         require(msg.sender != _borrower, "Can't liquidated your own position!");
 
         uint liquidationReward = (collateralBalance[_borrower] * 125) / 10000;
         collateralBalance[_borrower] -= liquidationReward;
 
-        (bool v_success, ) = vault.call{ value: collateralBalance[_borrower] }("");
+        (bool v_success, ) = vault.call{value: collateralBalance[_borrower]}(
+            ""
+        );
         require(v_success, "Transaction Failed!");
 
-        (bool l_success, ) = msg.sender.call{ value: liquidationReward }("");
+        (bool l_success, ) = msg.sender.call{value: liquidationReward}("");
         require(l_success, "Transaction Failed!");
 
         collateralBalance[_borrower] = 0;
@@ -267,7 +355,9 @@ contract FusionCore is AccessControl {
     }
 
     ///@notice retuns amount of $FUSN tokens earned
-    function getEarnedFusionTokens(address _staker) external view returns (uint) {
+    function getEarnedFusionTokens(
+        address _staker
+    ) external view returns (uint) {
         return fusionBalance[_staker] + calculateYieldTotal(_staker);
     }
 
@@ -277,12 +367,16 @@ contract FusionCore is AccessControl {
     }
 
     ///@notice returns amount of collateralized asset
-    function getCollateralBalance(address _borrower) external view returns (uint) {
+    function getCollateralBalance(
+        address _borrower
+    ) external view returns (uint) {
         return collateralBalance[_borrower];
     }
 
     ///@notice returns borrowing status of borrower
-    function getBorrowingStatus(address _borrower) external view returns (bool) {
+    function getBorrowingStatus(
+        address _borrower
+    ) external view returns (bool) {
         return isBorrowing[_borrower];
     }
 
@@ -297,7 +391,9 @@ contract FusionCore is AccessControl {
     }
 
     ///@notice returns liquidation point
-    function getLiquidationPoint(address _borrower) external view returns (uint) {
+    function getLiquidationPoint(
+        address _borrower
+    ) external view returns (uint) {
         return calculateLiquidationPoint(_borrower);
     }
 }
